@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Riichi Core Prototype</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="panel sidebar">
+        <h1>Riichi Core Prototype</h1>
+        <p>
+          This build focuses on the core flow of a riichi mahjong round: deal,
+          draw, discard, and test whether a hand is ready to win.
+        </p>
+
+        <section class="card">
+          <h2>Status</h2>
+          <div id="status" class="status">Start a round to begin.</div>
+        </section>
+
+        <section class="card">
+          <h2>Controls</h2>
+          <div class="controls">
+            <button id="draw-btn">Draw tile</button>
+            <button id="discard-btn" disabled>Discard selected</button>
+            <button id="riichi-btn">Declare riichi</button>
+            <button id="reset-btn">Start new round</button>
+            <button id="pon-btn" disabled>Pon</button>
+            <button id="chi-btn" disabled>Chi</button>
+            <button id="kan-btn" disabled>Kan</button>
+            <button id="ron-btn" disabled>Ron</button>
+            <button id="pass-call-btn" disabled>Pass</button>
+          </div>
+        </section>
+
+        <section class="card metrics">
+          <div><strong>Turn:</strong> <span id="turn-label">Not started</span></div>
+          <div><strong>Phase:</strong> <span id="phase-label">Draw</span></div>
+          <div><strong>Wall:</strong> <span id="wall-count">0</span></div>
+          <div><strong>Discarded:</strong> <span id="discard-count">0</span></div>
+          <div><strong>Riichi:</strong> <span id="riichi-state">No</span></div>
+        </section>
+
+        <section class="card">
+          <h2>Hand analysis</h2>
+          <div id="hand-summary" class="summary-grid"></div>
+        </section>
+
+        <section class="card">
+          <h2>Round result</h2>
+          <div id="round-result" class="summary-grid"></div>
+        </section>
+
+        <section class="card">
+          <h2>Action log</h2>
+          <div id="action-log" class="action-log"></div>
+        </section>
+
+        <section class="card">
+          <h2>Yaku & scoring</h2>
+          <div id="yaku-list" class="summary-grid"></div>
+        </section>
+
+        <section class="card">
+          <h2>Calls</h2>
+          <div id="melds-list" class="summary-grid"></div>
+        </section>
+
+        <section class="card">
+          <h2>Players</h2>
+          <div id="players" class="player-list"></div>
+        </section>
+      </aside>
+
+      <main class="panel board">
+        <section class="table-surface">
+          <div class="table-topbar">
+            <div class="table-pill">Wall <span id="wall">Round not started</span></div>
+            <div class="table-pill">Discard <span id="discard-count-label">0</span></div>
+          </div>
+
+          <div class="table-center">
+            <div class="opponent-zone">
+              <div class="opponent-card">
+                <span>South</span>
+                <div class="opponent-hand" id="south-hand" data-tile-count="13"></div>
+              </div>
+              <div class="opponent-card">
+                <span>West</span>
+                <div class="opponent-hand" id="west-hand" data-tile-count="13"></div>
+              </div>
+            </div>
+
+            <div class="center-zone">
+              <div class="center-card">
+                <h2>Discard area</h2>
+                <div id="discard" class="discard-area"></div>
+              </div>
+            </div>
+
+            <div class="opponent-zone">
+              <div class="opponent-card">
+                <span>North</span>
+                <div class="opponent-hand" id="north-hand" data-tile-count="13"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="player-zone card">
+            <h2>Your hand</h2>
+            <div id="hand" class="hand-grid"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,350 @@
+:root {
+  color-scheme: dark;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #12121b;
+  color: #f4f4f5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(135deg, #12121b 0%, #1c2233 100%);
+  min-height: 100vh;
+  overflow-y: auto;
+}
+
+button {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #5b8cff;
+  color: white;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  min-height: 100vh;
+}
+
+.panel {
+  padding: 1.5rem;
+}
+
+.sidebar {
+  background: rgba(9, 11, 20, 0.8);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.board {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 1rem 1.1rem;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.18);
+}
+
+.table-surface {
+  background: linear-gradient(135deg, rgba(18, 97, 52, 0.95), rgba(48, 120, 70, 0.9));
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 32px;
+  padding: 1rem;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.14), 0 24px 40px rgba(0,0,0,0.24);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.table-topbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.table-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #f9f9ef;
+  font-weight: 600;
+}
+
+.table-center {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr;
+  gap: 0.8rem;
+  align-items: center;
+}
+
+.opponent-zone {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.opponent-card,
+.center-card {
+  border-radius: 18px;
+  padding: 0.8rem;
+  background: rgba(255, 255, 255, 0.18);
+  color: #fdfdf8;
+  min-height: 88px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.center-zone {
+  display: flex;
+  justify-content: center;
+}
+
+.player-zone {
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.08);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.metrics {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.status {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.player-list {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.summary-grid {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 999px;
+  padding: 0.6rem 0.8rem;
+}
+
+.action-log {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 170px;
+  overflow: auto;
+}
+
+.action-entry {
+  padding: 0.55rem 0.7rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #f7f8fc;
+  font-size: 0.92rem;
+  border-left: 3px solid rgba(91, 140, 255, 0.8);
+}
+
+.result-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(255, 207, 77, 0.16);
+  color: #ffefb0;
+  font-size: 0.9rem;
+}
+
+.yaku-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.38rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(91, 140, 255, 0.16);
+  color: #dfe7ff;
+  font-size: 0.9rem;
+}
+
+.player-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #f8f8fb;
+}
+
+.player-chip.active {
+  outline: 1px solid rgba(91, 140, 255, 0.7);
+  background: rgba(91, 140, 255, 0.18);
+  animation: turnPulse 1s ease-in-out infinite;
+}
+
+@keyframes turnPulse {
+  0%,
+  100% {
+    transform: translateY(0);
+    box-shadow: 0 0 0 0 rgba(91, 140, 255, 0.2);
+  }
+  50% {
+    transform: translateY(-2px);
+    box-shadow: 0 0 0 4px rgba(91, 140, 255, 0.16);
+  }
+}
+
+@keyframes drawSweep {
+  0% {
+    opacity: 0;
+    transform: translateY(16px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.tile.draw-highlight {
+  animation: drawSweep 420ms ease-out;
+}
+
+.tile-stack,
+.discard-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  min-height: 76px;
+  align-items: center;
+}
+
+.hand-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  min-height: 110px;
+  align-items: center;
+  justify-content: center;
+}
+
+.opponent-hand {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+  min-height: 40px;
+  align-items: center;
+}
+
+.opponent-card > span {
+  font-weight: 600;
+  opacity: 0.95;
+}
+
+.back-tile {
+  opacity: 0.9;
+}
+
+.tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 74px;
+  height: 104px;
+  padding: 0;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: #f8f8f8;
+  color: #201c1e;
+  user-select: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.tile-graphic {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  border-radius: 14px;
+  background: #f8f8f8;
+}
+
+.tile:hover {
+  transform: translateY(-4px) scale(1.02);
+}
+
+.tile.animate-discard {
+  animation: discardPop 560ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes discardPop {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  40% {
+    transform: translateY(-10px) scale(1.05);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+.tile.selected {
+  outline: 3px solid #ffcf4d;
+  box-shadow: 0 0 0 3px rgba(255, 207, 77, 0.35);
+}
+
+.tile.small {
+  width: 56px;
+  height: 78px;
+}
+
+@media (max-width: 900px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    border-right: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+}

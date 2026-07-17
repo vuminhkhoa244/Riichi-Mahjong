@@ -1,0 +1,16 @@
+export const state = {
+  deck: [],
+  players: [],
+  discard: [],
+  currentTurn: 0,
+  turnPhase: "draw",
+  selectedTile: null,
+  riichiChecked: false,
+  riichiActive: false,
+  roundStarted: false,
+  roundResult: null,
+  actionLog: [],
+  lastDrawnTile: null,
+  melds: [],
+  pendingCall: null,
+};
