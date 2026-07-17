@@ -71,11 +71,13 @@ export function getTileCountInHand(player, tile) {
 }
 
 export function canPon(player, tile) {
-  return !player.isHuman ? false : getTileCountInHand(player, tile) >= 2 && state.riichiActive === false;
+  if (player.isHuman && state.riichiActive) return false;
+  return getTileCountInHand(player, tile) >= 2;
 }
 
 export function canKan(player, tile) {
-  return !player.isHuman ? false : getTileCountInHand(player, tile) >= 3;
+  if (player.isHuman && state.riichiActive) return false;
+  return getTileCountInHand(player, tile) >= 3;
 }
 
 export function canRon(hand, tile) {
@@ -111,9 +113,9 @@ export function findChiSequence(hand, tile) {
   return null;
 }
 
-export function canChi(hand, tile) {
-  if (state.riichiActive) return false;
-  return findChiSequence(hand, tile) !== null;
+export function canChi(player, tile) {
+  if (player.isHuman && state.riichiActive) return false;
+  return findChiSequence(player.tiles, tile) !== null;
 }
 
 export function declarePon(tile) {
@@ -180,7 +182,7 @@ export function declareChi(tile) {
 export function declareRon(tile) {
   const player = getHumanPlayer();
   state.roundStarted = false;
-  const analysis = analyzeHand([...player.tiles, tile]);
+  const analysis = analyzeHand([...player.tiles, tile], state.melds, state.riichiActive, false);
   state.roundResult = {
     winner: "You",
     reason: "complete",
@@ -194,23 +196,157 @@ export function declareRon(tile) {
 }
 
 export function checkForCalls(tile, discardedByPlayerIndex) {
-  const human = getHumanPlayer();
-  if (!human || discardedByPlayerIndex === 0) {
+  if (discardedByPlayerIndex === 0) {
     return;
   }
 
-  state.pendingCall = {
-    tile,
-    canPon: canPon(human, tile),
-    canKan: canKan(human, tile),
-    canRon: canRon(human.tiles, tile),
-    canChi: canChi(human.tiles, tile),
-    chiSequence: findChiSequence(human.tiles, tile),
-  };
+  const eligiblePlayers = state.players
+    .map((player, index) => ({ player, index }))
+    .filter(({ index }) => index !== discardedByPlayerIndex);
 
-  if (state.pendingCall.canPon || state.pendingCall.canKan || state.pendingCall.canRon || state.pendingCall.canChi) {
-    render();
+  const callOptions = eligiblePlayers.map(({ player, index }) => {
+    const distance = (index - discardedByPlayerIndex + state.players.length) % state.players.length;
+    return {
+      player,
+      index,
+      distance,
+      canRon: canRon(player.tiles, tile),
+      canPon: canPon(player, tile),
+      canKan: canKan(player, tile),
+      canChi: canChi(player, tile) && distance === 1,
+    };
+  });
+
+  const ronCall = callOptions.find((c) => c.canRon);
+  if (ronCall) {
+    if (ronCall.player.isHuman) {
+      state.pendingCall = {
+        tile,
+        canRon: true,
+        canPon: false,
+        canKan: false,
+        canChi: false,
+      };
+      render();
+    } else {
+      executeAiRon(ronCall.index, tile);
+    }
+    return;
   }
+
+  const ponCalls = callOptions.filter((c) => c.canPon);
+  const kanCalls = callOptions.filter((c) => c.canKan);
+  if (ponCalls.length > 0 || kanCalls.length > 0) {
+    const allCalls = [...ponCalls.map(c => ({...c, type: 'pon'})), ...kanCalls.map(c => ({...c, type: 'kan'}))];
+    const winner = allCalls.sort((a, b) => a.distance - b.distance)[0];
+    if (winner.player.isHuman) {
+      state.pendingCall = {
+        tile,
+        canRon: false,
+        canPon: winner.type === 'pon',
+        canKan: winner.type === 'kan',
+        canChi: false,
+      };
+      render();
+    } else {
+      if (winner.type === 'pon') {
+        executeAiPon(winner.index, tile);
+      } else {
+        executeAiKan(winner.index, tile);
+      }
+    }
+    return;
+  }
+
+  const chiCalls = callOptions.filter((c) => c.canChi);
+  if (chiCalls.length > 0) {
+    const winner = chiCalls.sort((a, b) => a.distance - b.distance)[0];
+    if (winner.player.isHuman) {
+      state.pendingCall = {
+        tile,
+        canRon: false,
+        canPon: false,
+        canKan: false,
+        canChi: true,
+        chiSequence: findChiSequence(winner.player.tiles, tile),
+      };
+      render();
+    } else {
+      executeAiChi(winner.index, tile);
+    }
+    return;
+  }
+}
+
+function executeAiPon(playerIndex, tile) {
+  const player = state.players[playerIndex];
+  let removed = 0;
+  player.tiles = player.tiles.filter((t) => {
+    if (t === tile && removed < 2) {
+      removed += 1;
+      return false;
+    }
+    return true;
+  });
+  state.melds.push({ type: "pon", tile, player: player.name });
+  state.currentTurn = playerIndex;
+  state.turnPhase = "discard";
+  setStatus(`${player.name} called Pon on ${tile}.`);
+  render();
+  window.setTimeout(() => runAiTurn(playerIndex), 600);
+}
+
+function executeAiKan(playerIndex, tile) {
+  const player = state.players[playerIndex];
+  let removed = 0;
+  player.tiles = player.tiles.filter((t) => {
+    if (t === tile && removed < 3) {
+      removed += 1;
+      return false;
+    }
+    return true;
+  });
+  state.melds.push({ type: "kan", tile, player: player.name });
+  state.currentTurn = playerIndex;
+  state.turnPhase = "discard";
+  setStatus(`${player.name} called Kan on ${tile}.`);
+  render();
+  window.setTimeout(() => runAiTurn(playerIndex), 600);
+}
+
+function executeAiChi(playerIndex, tile) {
+  const player = state.players[playerIndex];
+  const seq = findChiSequence(player.tiles, tile);
+  if (!seq) return;
+  const toRemove = seq.filter((t) => t !== tile);
+  const remaining = [...player.tiles];
+  for (const t of toRemove) {
+    const idx = remaining.indexOf(t);
+    if (idx !== -1) remaining.splice(idx, 1);
+  }
+  player.tiles = remaining;
+  state.melds.push({ type: "chi", tile, player: player.name, sequence: seq });
+  state.currentTurn = playerIndex;
+  state.turnPhase = "discard";
+  setStatus(`${player.name} called Chi on ${tile}.`);
+  render();
+  window.setTimeout(() => runAiTurn(playerIndex), 600);
+}
+
+function executeAiRon(playerIndex, tile) {
+  const player = state.players[playerIndex];
+  state.roundStarted = false;
+  const analysis = analyzeHand([...player.tiles, tile], state.melds, false, false);
+  state.roundResult = {
+    winner: player.name,
+    reason: "complete",
+    winningTile: tile,
+    scoreEstimate: analysis.scoreEstimate,
+    yakuHints: analysis.yakuHints,
+  };
+  state.melds.push({ type: "ron", tile, player: player.name });
+  setStatus(`${player.name} called Ron on ${tile}!`);
+  render();
 }
 
 export function passCall() {
@@ -312,7 +448,7 @@ export function drawTile() {
 
   if (isComplete(player.tiles)) {
     state.roundStarted = false;
-    const analysis = analyzeHand(player.tiles);
+    const analysis = analyzeHand(player.tiles, state.melds, state.riichiActive, true);
     state.roundResult = {
       winner: "You",
       reason: "complete",
@@ -325,7 +461,7 @@ export function drawTile() {
     return;
   }
 
-  const analysis = analyzeHand(player.tiles);
+  const analysis = analyzeHand(player.tiles, state.melds, state.riichiActive, false);
   setStatus(`Drew ${tile}. ${analysis.ready ? `Ready with ${analysis.readyTile}.` : "Choose a tile to discard."}`);
   render();
 }
@@ -441,7 +577,7 @@ export function runAiTurn(playerIndex) {
 
   if (isComplete(player.tiles)) {
     state.roundStarted = false;
-    const analysis = analyzeHand(player.tiles);
+    const analysis = analyzeHand(player.tiles, state.melds, false, true);
     state.roundResult = {
       winner: player.name,
       reason: "complete",

@@ -1,4 +1,5 @@
 import { allTiles } from "./tiles.js";
+import { detectYaku, calculateScore } from "./yaku.js";
 
 export function createCountMap(hand) {
   const counts = new Map();
@@ -134,42 +135,24 @@ export function countPairs(counts) {
   return pairs;
 }
 
-export function analyzeHand(hand, riichiActive = false) {
+export function analyzeHand(hand, melds = [], riichiActive = false, isTsumo = false) {
   const counts = createCountMap(hand);
   const readyTile = findReadyTile(hand);
   const complete = isComplete(hand);
-  const melds = countMelds(counts);
+  const meldCount = countMelds(counts);
   const pairs = countPairs(counts);
-  const yakuHints = [];
-  if (riichiActive) {
-    yakuHints.push("Riichi");
-  }
-  if (readyTile) {
-    yakuHints.push("Ready hand");
-  }
-  if (melds >= 2) {
-    yakuHints.push("Tanyao");
-  }
-  if (pairs >= 1 && readyTile) {
-    yakuHints.push("Pair-based hand");
-  }
-  if (complete) {
-    yakuHints.push("Winning hand");
-  }
-
-  const scoreEstimate = complete
-    ? 8000 + (riichiActive ? 2000 : 0) + melds * 300
-    : readyTile
-      ? 1800 + melds * 250 + (riichiActive ? 900 : 0)
-      : 500 + melds * 120;
+  const yakuList = detectYaku(hand, melds, riichiActive, isTsumo);
+  const score = calculateScore(yakuList, isTsumo);
+  const yakuNames = yakuList.map((y) => y.name);
 
   return {
     complete,
     ready: Boolean(readyTile),
     readyTile,
-    melds,
+    melds: meldCount,
     pairs,
-    scoreEstimate,
-    yakuHints,
+    scoreEstimate: score.points,
+    scoreLabel: score.label,
+    yakuHints: yakuNames,
   };
 }

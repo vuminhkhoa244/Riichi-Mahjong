@@ -23,7 +23,7 @@ export function render() {
 
   const humanPlayer = getHumanPlayer();
   const currentPlayer = state.players[state.currentTurn];
-  const analysis = analyzeHand(humanPlayer.tiles, state.riichiActive);
+  const analysis = analyzeHand(humanPlayer.tiles, state.melds, state.riichiActive, false);
 
   if (!state.pendingCall && humanPlayer.tiles.length) {
     humanPlayer.tiles = sortHand(humanPlayer.tiles);
