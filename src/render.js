@@ -47,16 +47,6 @@ export function render() {
     });
   }
 
-  if (discardEl) {
-    discardEl.innerHTML = "";
-    const allDiscards = state.discards.flat();
-    allDiscards.slice(-8).reverse().forEach((tile, index) => {
-      const span = document.createElement("span");
-      span.className = `tile small ${tile.slice(-1)} ${index === 0 && allDiscards.length ? "animate-discard" : ""}`;
-      span.innerHTML = `<img class="tile-graphic" src="${createTileSvg(tile)}" alt="${tile}" />`;
-      discardEl.appendChild(span);
-    });
-  }
 
   const playerDiscardEl = document.getElementById("player-discard");
   if (playerDiscardEl) {
@@ -74,8 +64,8 @@ export function render() {
     southDiscardEl.innerHTML = "";
     state.discards[1].slice(-6).forEach((tile) => {
       const span = document.createElement("span");
-      span.className = `tile small back-tile`;
-      span.innerHTML = `<img class="tile-graphic" src="${createBackTileSvg()}" alt="tile" />`;
+      span.className = `tile small ${tile.slice(-1)}`;
+      span.innerHTML = `<img class="tile-graphic" src="${createTileSvg(tile)}" alt="${tile}" />`;
       southDiscardEl.appendChild(span);
     });
   }
@@ -85,8 +75,8 @@ export function render() {
     westDiscardEl.innerHTML = "";
     state.discards[2].slice(-6).forEach((tile) => {
       const span = document.createElement("span");
-      span.className = `tile small back-tile`;
-      span.innerHTML = `<img class="tile-graphic" src="${createBackTileSvg()}" alt="tile" />`;
+      span.className = `tile small ${tile.slice(-1)}`;
+      span.innerHTML = `<img class="tile-graphic" src="${createTileSvg(tile)}" alt="${tile}" />`;
       westDiscardEl.appendChild(span);
     });
   }
@@ -96,8 +86,8 @@ export function render() {
     northDiscardEl.innerHTML = "";
     state.discards[3].slice(-6).forEach((tile) => {
       const span = document.createElement("span");
-      span.className = `tile small back-tile`;
-      span.innerHTML = `<img class="tile-graphic" src="${createBackTileSvg()}" alt="tile" />`;
+      span.className = `tile small ${tile.slice(-1)}`;
+      span.innerHTML = `<img class="tile-graphic" src="${createTileSvg(tile)}" alt="${tile}" />`;
       northDiscardEl.appendChild(span);
     });
   }
@@ -182,12 +172,28 @@ export function render() {
   const meldsEl = document.getElementById("melds-list");
   if (meldsEl) {
     meldsEl.innerHTML = "";
-    if (state.melds.length) {
-      state.melds.forEach((meld) => {
-        const item = document.createElement("span");
-        item.className = "yaku-pill";
-        item.textContent = `${meld.type.toUpperCase()} ${meld.tile}`;
-        meldsEl.appendChild(item);
+    const meldsByPlayer = new Map();
+    state.melds.forEach((meld) => {
+      const playerName = meld.player || "Unknown";
+      if (!meldsByPlayer.has(playerName)) {
+        meldsByPlayer.set(playerName, []);
+      }
+      meldsByPlayer.get(playerName).push(meld);
+    });
+
+    if (meldsByPlayer.size) {
+      meldsByPlayer.forEach((meldList, playerName) => {
+        const playerHeader = document.createElement("div");
+        playerHeader.className = "summary-item";
+        playerHeader.innerHTML = `<span>${playerName}</span><strong>${meldList.length} call${meldList.length > 1 ? 's' : ''}</strong>`;
+        meldsEl.appendChild(playerHeader);
+
+        meldList.forEach((meld) => {
+          const item = document.createElement("span");
+          item.className = "yaku-pill";
+          item.textContent = `${meld.type.toUpperCase()} ${meld.tile}`;
+          meldsEl.appendChild(item);
+        });
       });
     } else {
       const fallback = document.createElement("div");

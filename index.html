@@ -78,12 +78,14 @@
               <div class="opponent-card" data-player="1">
                 <span>South</span>
                 <div class="opponent-hand" id="south-hand" data-tile-count="13"></div>
-                <div class="player-discard-area" id="south-discard"></div>
+                <div class="discard-label">South discards</div>
+                <div class="player-discard-area" id="south-discard" data-empty-text="South discards"></div>
               </div>
               <div class="opponent-card" data-player="2">
                 <span>West</span>
                 <div class="opponent-hand" id="west-hand" data-tile-count="13"></div>
-                <div class="player-discard-area" id="west-discard"></div>
+                <div class="discard-label">West discards</div>
+                <div class="player-discard-area" id="west-discard" data-empty-text="West discards"></div>
               </div>
             </div>
 
@@ -98,7 +100,8 @@
               <div class="opponent-card" data-player="3">
                 <span>North</span>
                 <div class="opponent-hand" id="north-hand" data-tile-count="13"></div>
-                <div class="player-discard-area" id="north-discard"></div>
+                <div class="discard-label">North discards</div>
+                <div class="player-discard-area" id="north-discard" data-empty-text="North discards"></div>
               </div>
             </div>
           </div>
@@ -109,7 +112,8 @@
               <div class="table-pill player-score">Score: <span id="player-score">25,000</span></div>
             </div>
             <div id="hand" class="hand-grid"></div>
-            <div class="player-discard-area" id="player-discard"></div>
+            <div class="discard-label">Your discards</div>
+            <div class="player-discard-area" id="player-discard" data-empty-text="Your discards"></div>
             <div class="table-controls">
               <button id="draw-btn">Draw tile</button>
               <button id="discard-btn" disabled>Discard selected</button>

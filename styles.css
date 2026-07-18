@@ -113,8 +113,11 @@ button:disabled {
   padding: 0.8rem;
   background: rgba(255, 255, 255, 0.18);
   color: #fdfdf8;
-  min-height: 88px;
+  min-height: 140px;
   border: 1px solid rgba(255, 255, 255, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .center-zone {
@@ -268,9 +271,10 @@ button:disabled {
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
-  margin-top: 0.5rem;
   min-height: 40px;
   align-items: center;
+  max-height: 180px;
+  overflow: auto;
 }
 
 .opponent-card > span {
@@ -278,13 +282,35 @@ button:disabled {
   opacity: 0.95;
 }
 
+.discard-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.7;
+  margin-top: 0.1rem;
+}
+
 .player-discard-area {
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
-  margin-top: 0.5rem;
-  min-height: 40px;
+  min-height: 48px;
   align-items: center;
+  padding: 0.4rem;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  margin-top: 0.5rem;
+  flex-shrink: 0;
+}
+
+.player-discard-area:empty::after {
+  content: attr(data-empty-text);
+  opacity: 0.7;
+  font-size: 0.85rem;
+  padding: 0.2rem 0.4rem;
+  width: 100%;
+  text-align: center;
 }
 
 .opponent-card[data-player] {

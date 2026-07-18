@@ -293,7 +293,6 @@ function executeAiPon(playerIndex, tile) {
   state.turnPhase = "discard";
   setStatus(`${player.name} called Pon on ${tile}.`);
   render();
-  window.setTimeout(() => runAiTurn(playerIndex), 600);
 }
 
 function executeAiKan(playerIndex, tile) {
@@ -311,7 +310,6 @@ function executeAiKan(playerIndex, tile) {
   state.turnPhase = "discard";
   setStatus(`${player.name} called Kan on ${tile}.`);
   render();
-  window.setTimeout(() => runAiTurn(playerIndex), 600);
 }
 
 function executeAiChi(playerIndex, tile) {
@@ -330,7 +328,6 @@ function executeAiChi(playerIndex, tile) {
   state.turnPhase = "discard";
   setStatus(`${player.name} called Chi on ${tile}.`);
   render();
-  window.setTimeout(() => runAiTurn(playerIndex), 600);
 }
 
 function executeAiRon(playerIndex, tile) {
