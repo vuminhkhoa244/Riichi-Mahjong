@@ -21,7 +21,9 @@ export function chooseAiDiscard(player) {
   }
 
   if (player.aiStyle === "defensive") {
-    const safe = sorted.find((entry) => !entry.tile.includes(state.discard[state.discard.length - 1] || ""));
+    const allDiscards = state.discards.flat();
+    const lastDiscard = allDiscards[allDiscards.length - 1] || "";
+    const safe = sorted.find((entry) => !entry.tile.includes(lastDiscard));
     return safe || preferred;
   }
 

@@ -278,6 +278,29 @@ button:disabled {
   opacity: 0.95;
 }
 
+.player-discard-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+  min-height: 40px;
+  align-items: center;
+}
+
+.opponent-card[data-player] {
+  transition: outline 0.2s ease, background 0.2s ease;
+}
+
+.opponent-card.active-turn {
+  outline: 2px solid #ffcf4d;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.player-zone.active-turn {
+  outline: 2px solid #ffcf4d;
+  background: rgba(255, 255, 255, 0.12);
+}
+
 .back-tile {
   opacity: 0.9;
 }
@@ -338,6 +361,48 @@ button:disabled {
   height: 78px;
 }
 
+.table-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 0.8rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.table-controls button {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(4px);
+}
+
+.table-controls button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.26);
+  transform: translateY(-1px);
+}
+
+.table-controls button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.player-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.player-header h2 {
+  margin: 0;
+}
+
+.player-score {
+  background: rgba(255, 255, 255, 0.14);
+}
+
 @media (max-width: 900px) {
   .app-shell {
     grid-template-columns: 1fr;
@@ -346,5 +411,9 @@ button:disabled {
   .sidebar {
     border-right: 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .table-controls {
+    justify-content: center;
   }
 }

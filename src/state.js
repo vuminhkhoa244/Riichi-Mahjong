@@ -1,7 +1,7 @@
 export const state = {
   deck: [],
   players: [],
-  discard: [],
+  discards: [[], [], [], []],
   currentTurn: 0,
   turnPhase: "draw",
   selectedTile: null,

@@ -25,10 +25,10 @@ export function buildDeck() {
 
 export function createPlayers() {
   return [
-    { name: "You", tiles: [], isHuman: true, lastDiscard: null, aiStyle: "human" },
-    { name: "South", tiles: [], isHuman: false, lastDiscard: null, aiStyle: "aggressive" },
-    { name: "West", tiles: [], isHuman: false, lastDiscard: null, aiStyle: "balanced" },
-    { name: "North", tiles: [], isHuman: false, lastDiscard: null, aiStyle: "defensive" },
+    { name: "You", tiles: [], isHuman: true, lastDiscard: null, aiStyle: "human", score: 25000 },
+    { name: "South", tiles: [], isHuman: false, lastDiscard: null, aiStyle: "aggressive", score: 25000 },
+    { name: "West", tiles: [], isHuman: false, lastDiscard: null, aiStyle: "balanced", score: 25000 },
+    { name: "North", tiles: [], isHuman: false, lastDiscard: null, aiStyle: "defensive", score: 25000 },
   ];
 }
 
@@ -388,7 +388,7 @@ export function handleCall(action) {
 export function startRound() {
   state.deck = buildDeck();
   state.players = createPlayers();
-  state.discard = [];
+  state.discards = [[], [], [], []];
   state.currentTurn = 0;
   state.turnPhase = "draw";
   state.selectedTile = null;
@@ -500,7 +500,7 @@ export function discardSelected() {
   player.tiles = sortHand(player.tiles);
   addActionLog(`You discarded ${discardedTile}.`);
   player.lastDiscard = discardedTile;
-  state.discard.push(discardedTile);
+  state.discards[0].push(discardedTile);
   state.selectedTile = null;
   state.riichiChecked = false;
   state.riichiActive = false;
@@ -565,7 +565,7 @@ export function runAiTurn(playerIndex) {
   const [discardedTile] = player.tiles.splice(discardDecision.index, 1);
   addActionLog(`${player.name} discarded ${discardedTile}.`);
   player.lastDiscard = discardedTile;
-  state.discard.push(discardedTile);
+  state.discards[playerIndex].push(discardedTile);
 
   const discardedByPlayerIndex = state.players.indexOf(player);
   checkForCalls(discardedTile, discardedByPlayerIndex);

@@ -20,6 +20,7 @@ export function render() {
   const resultEl = document.getElementById("round-result");
   const actionLogEl = document.getElementById("action-log");
   const yakuEl = document.getElementById("yaku-list");
+  const playerScoreEl = document.getElementById("player-score");
 
   const humanPlayer = getHumanPlayer();
   const currentPlayer = state.players[state.currentTurn];
@@ -27,6 +28,10 @@ export function render() {
 
   if (!state.pendingCall && humanPlayer.tiles.length) {
     humanPlayer.tiles = sortHand(humanPlayer.tiles);
+  }
+
+  if (playerScoreEl) {
+    playerScoreEl.textContent = humanPlayer.score ? `${humanPlayer.score.toLocaleString()}` : "25,000";
   }
 
   if (handEl) {
@@ -44,11 +49,56 @@ export function render() {
 
   if (discardEl) {
     discardEl.innerHTML = "";
-    state.discard.slice(-8).reverse().forEach((tile, index) => {
+    const allDiscards = state.discards.flat();
+    allDiscards.slice(-8).reverse().forEach((tile, index) => {
       const span = document.createElement("span");
-      span.className = `tile small ${tile.slice(-1)} ${index === 0 && state.discard.length ? "animate-discard" : ""}`;
+      span.className = `tile small ${tile.slice(-1)} ${index === 0 && allDiscards.length ? "animate-discard" : ""}`;
       span.innerHTML = `<img class="tile-graphic" src="${createTileSvg(tile)}" alt="${tile}" />`;
       discardEl.appendChild(span);
+    });
+  }
+
+  const playerDiscardEl = document.getElementById("player-discard");
+  if (playerDiscardEl) {
+    playerDiscardEl.innerHTML = "";
+    state.discards[0].slice(-6).forEach((tile) => {
+      const span = document.createElement("span");
+      span.className = `tile small ${tile.slice(-1)}`;
+      span.innerHTML = `<img class="tile-graphic" src="${createTileSvg(tile)}" alt="${tile}" />`;
+      playerDiscardEl.appendChild(span);
+    });
+  }
+
+  const southDiscardEl = document.getElementById("south-discard");
+  if (southDiscardEl) {
+    southDiscardEl.innerHTML = "";
+    state.discards[1].slice(-6).forEach((tile) => {
+      const span = document.createElement("span");
+      span.className = `tile small back-tile`;
+      span.innerHTML = `<img class="tile-graphic" src="${createBackTileSvg()}" alt="tile" />`;
+      southDiscardEl.appendChild(span);
+    });
+  }
+
+  const westDiscardEl = document.getElementById("west-discard");
+  if (westDiscardEl) {
+    westDiscardEl.innerHTML = "";
+    state.discards[2].slice(-6).forEach((tile) => {
+      const span = document.createElement("span");
+      span.className = `tile small back-tile`;
+      span.innerHTML = `<img class="tile-graphic" src="${createBackTileSvg()}" alt="tile" />`;
+      westDiscardEl.appendChild(span);
+    });
+  }
+
+  const northDiscardEl = document.getElementById("north-discard");
+  if (northDiscardEl) {
+    northDiscardEl.innerHTML = "";
+    state.discards[3].slice(-6).forEach((tile) => {
+      const span = document.createElement("span");
+      span.className = `tile small back-tile`;
+      span.innerHTML = `<img class="tile-graphic" src="${createBackTileSvg()}" alt="tile" />`;
+      northDiscardEl.appendChild(span);
     });
   }
 
@@ -151,19 +201,25 @@ export function render() {
     wallEl.innerHTML = state.deck.length ? `${state.deck.length} tiles remain` : "Wall empty";
   }
   if (discardCountEl) {
-    discardCountEl.textContent = state.discard.length;
+    discardCountEl.textContent = state.discards.reduce((sum, pile) => sum + pile.length, 0);
   }
   if (wallCountEl) {
     wallCountEl.textContent = state.deck.length;
   }
   const discardCountLabel = document.getElementById("discard-count-label");
   if (discardCountLabel) {
-    discardCountLabel.textContent = state.discard.length;
+    discardCountLabel.textContent = state.discards.reduce((sum, pile) => sum + pile.length, 0);
   }
 
   if (turnLabelEl) {
     turnLabelEl.textContent = state.roundStarted ? currentPlayer?.name || "Waiting" : "Not started";
   }
+
+  document.querySelectorAll(".opponent-card[data-player], .player-zone[data-player]").forEach((el) => {
+    const playerIndex = Number(el.getAttribute("data-player"));
+    if (Number.isNaN(playerIndex)) return;
+    el.classList.toggle("active-turn", playerIndex === state.currentTurn && state.roundStarted);
+  });
   if (phaseLabelEl) {
     phaseLabelEl.textContent = !state.roundStarted
       ? "Round over"

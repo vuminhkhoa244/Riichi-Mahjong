@@ -21,17 +21,9 @@
         </section>
 
         <section class="card">
-          <h2>Controls</h2>
+          <h2>Actions</h2>
           <div class="controls">
-            <button id="draw-btn">Draw tile</button>
-            <button id="discard-btn" disabled>Discard selected</button>
-            <button id="riichi-btn">Declare riichi</button>
             <button id="reset-btn">Start new round</button>
-            <button id="pon-btn" disabled>Pon</button>
-            <button id="chi-btn" disabled>Chi</button>
-            <button id="kan-btn" disabled>Kan</button>
-            <button id="ron-btn" disabled>Ron</button>
-            <button id="pass-call-btn" disabled>Pass</button>
           </div>
         </section>
 
@@ -83,13 +75,15 @@
 
           <div class="table-center">
             <div class="opponent-zone">
-              <div class="opponent-card">
+              <div class="opponent-card" data-player="1">
                 <span>South</span>
                 <div class="opponent-hand" id="south-hand" data-tile-count="13"></div>
+                <div class="player-discard-area" id="south-discard"></div>
               </div>
-              <div class="opponent-card">
+              <div class="opponent-card" data-player="2">
                 <span>West</span>
                 <div class="opponent-hand" id="west-hand" data-tile-count="13"></div>
+                <div class="player-discard-area" id="west-discard"></div>
               </div>
             </div>
 
@@ -101,16 +95,31 @@
             </div>
 
             <div class="opponent-zone">
-              <div class="opponent-card">
+              <div class="opponent-card" data-player="3">
                 <span>North</span>
                 <div class="opponent-hand" id="north-hand" data-tile-count="13"></div>
+                <div class="player-discard-area" id="north-discard"></div>
               </div>
             </div>
           </div>
 
-          <div class="player-zone card">
-            <h2>Your hand</h2>
+          <div class="player-zone card" data-player="0">
+            <div class="player-header">
+              <h2>Your hand</h2>
+              <div class="table-pill player-score">Score: <span id="player-score">25,000</span></div>
+            </div>
             <div id="hand" class="hand-grid"></div>
+            <div class="player-discard-area" id="player-discard"></div>
+            <div class="table-controls">
+              <button id="draw-btn">Draw tile</button>
+              <button id="discard-btn" disabled>Discard selected</button>
+              <button id="riichi-btn">Declare riichi</button>
+              <button id="pon-btn" disabled>Pon</button>
+              <button id="chi-btn" disabled>Chi</button>
+              <button id="kan-btn" disabled>Kan</button>
+              <button id="ron-btn" disabled>Ron</button>
+              <button id="pass-call-btn" disabled>Pass</button>
+            </div>
           </div>
         </section>
       </main>
